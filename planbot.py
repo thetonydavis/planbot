@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, jsonify
 import json
 import uuid
 import logging
@@ -16,14 +16,23 @@ def receive_data():
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
-    intermediary_url = f"https://www.tpak.app/planbot-html/?token={token}"
+    
+    # Change this to your chatbot URL
+    chatbot_url = "https://your_chatbot_url_here.com"
+    
+    # Pass the token as a parameter
+    intermediary_url = f"{chatbot_url}?token={token}"
+    
     logging.info("Redirecting to: %s", intermediary_url)
     return redirect(intermediary_url)
 
 @app.route('/get_data/<token>', methods=['GET'])
 def get_data(token):
     logging.info("Fetching data for token: %s", token)
-    return json.dumps(user_data_store.get(token, {}))
+    data = user_data_store.get(token, {})
+    
+    # You can use the token to fetch data from within your chatbot
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
