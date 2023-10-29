@@ -13,7 +13,7 @@ def receive_data():
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
-    intermediary_url = f"https://www.tpak.app/planbot-html/?token={token}"
+    intermediary_url = f"https://chat-app-fa81b9.zapier.app/?token={token}"
     return redirect(intermediary_url)
 
 @app.route('/get_data/<token>', methods=['GET'])
