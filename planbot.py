@@ -16,7 +16,7 @@ def receive_data():
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
-    intermediary_url = f"https://your-intermediary-page.com/?token={token}"
+    intermediary_url = f"https://www.tpak.app/planbot-html/?token={token}"
     logging.info("Redirecting to: %s", intermediary_url)
     return redirect(intermediary_url)
 
