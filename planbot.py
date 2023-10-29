@@ -9,6 +9,7 @@ user_data_store = {}
 
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
+    print("POST data received:", request.form.to_dict())
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
