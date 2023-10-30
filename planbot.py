@@ -19,11 +19,11 @@ ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/2850076/38e9im5/'
 
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
-    try:
-        logging.info("POST data received: %s", request.form.to_dict())
-        data = request.form.to_dict()
-        token = str(uuid.uuid4())
-        user_data_store[token] = data
+    logging.info("POST data received: %s", request.form.to_dict())
+    data = request.form.to_dict()
+    token = str(uuid.uuid4())
+    user_data_store[token] = data
+    logging.info("Current user_data_store: %s", user_data_store)  # Log the current state
 
         # Send data to Zapier
         requests.post(ZAPIER_WEBHOOK_URL, json=data)
