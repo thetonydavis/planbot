@@ -4,6 +4,7 @@ import json
 import uuid
 import logging
 import requests  # Import requests for sending data to Zapier
+from flask import make_response  # Import make_response
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,7 +34,9 @@ def receive_data():
     intermediary_url = f"{softr_url}?token={token}"
     logging.info("Redirecting to: %s", intermediary_url)
 
-    return redirect(intermediary_url, code=302)
+    resp = make_response(redirect(intermediary_url, code=302))  # Create a response object
+    resp.set_cookie('chatbot_data', json.dumps(data))  # Set a cookie containing the form data
+
 
 
 @app.route('/get_data/<token>', methods=['GET'])
