@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect, jsonify
+from flask_cors import CORS  # Import CORS
 import json
 import uuid
 import logging
@@ -6,6 +7,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
+CORS(app)  # Initialize CORS
 
 # Temporary in-memory storage for user data
 user_data_store = {}
