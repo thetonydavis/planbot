@@ -1,3 +1,4 @@
+
 from flask import Flask, request, redirect, jsonify
 from flask_cors import CORS
 import logging
@@ -18,29 +19,34 @@ ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/2850076/38e9im5/'
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
     try:
-        logging.info("POST data received: %s", request.form.to_dict())
+        # Debugging Step 1: Log the incoming POST data
+        logging.info("Debug Step 1: POST data received: %s", request.form.to_dict())
+        
         data = request.form.to_dict()
         token = str(uuid.uuid4())
         user_data_store[token] = data
 
-        # Send data to Zapier
+        # Debugging Step 2: Send data to Zapier and log it
         requests.post(ZAPIER_WEBHOOK_URL, json=data)
-
+        logging.info("Debug Step 2: Data sent to Zapier: %s", data)
+        
         # Your Softr HTML page URL here
         softr_url = "https://www.tpak.app/planbot-html"
 
-        # Redirect with the token as a parameter
+        # Debugging Step 3: Prepare the redirect URL and log it
         intermediary_url = f"{softr_url}?token={token}"
-        logging.info("Redirecting to: %s", intermediary_url)
+        logging.info("Debug Step 3: Redirecting to: %s", intermediary_url)
 
         return redirect(intermediary_url, code=302)
     except Exception as e:
-        logging.error("An error occurred: %s", str(e))
+        # Debugging Step 4: Log any exceptions
+        logging.error("Debug Step 4: An error occurred: %s", str(e))
         return jsonify({"error": "An error occurred"}), 500
 
 @app.route('/get_data/<token>', methods=['GET'])
 def get_data(token):
-    logging.info("Fetching data for token: %s", token)
+    # Debugging Step 5: Log the token and data being fetched
+    logging.info("Debug Step 5: Fetching data for token: %s", token)
     data = user_data_store.get(token, {})
     return jsonify(data)
 
