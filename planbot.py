@@ -19,23 +19,26 @@ ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/2850076/38e9im5/'
 
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
-    logging.info("POST data received: %s", request.form.to_dict())
-    data = request.form.to_dict()
-    token = str(uuid.uuid4())
-    user_data_store[token] = data
+    try:
+        logging.info("POST data received: %s", request.form.to_dict())
+        data = request.form.to_dict()
+        token = str(uuid.uuid4())
+        user_data_store[token] = data
 
-    # Send data to Zapier
-    requests.post(ZAPIER_WEBHOOK_URL, json=data)
+        # Send data to Zapier
+        requests.post(ZAPIER_WEBHOOK_URL, json=data)
 
-    # Your Softr HTML page URL here
-    softr_url = "https://www.tpak.app/planbot-html"
+        # Your Softr HTML page URL here
+        softr_url = "https://www.tpak.app/planbot-html"
 
-    # Redirect with the token as a parameter
-    intermediary_url = f"{softr_url}?token={token}"
-    logging.info("Redirecting to: %s", intermediary_url)
+        # Redirect with the token as a parameter
+        intermediary_url = f"{softr_url}?token={token}"
+        logging.info("Redirecting to: %s", intermediary_url)
 
-    resp = make_response(redirect(intermediary_url, code=302))  # Create a response object
-    resp.set_cookie('chatbot_data', json.dumps(data))  # Set a cookie containing the form data
+        return redirect(intermediary_url, code=302)
+    except Exception as e:
+        logging.error("An error occurred: %s", str(e))
+        return jsonify({"error": "An error occurred"}), 500
 
 
 
