@@ -1,10 +1,8 @@
 from flask import Flask, request, redirect, jsonify
-from flask_cors import CORS  # Import CORS
-import json
-import uuid
+from flask_cors import CORS
 import logging
-import requests  # Import requests for sending data to Zapier
-from flask import make_response  # Import make_response
+import requests
+import uuid
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,13 +17,12 @@ ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/2850076/38e9im5/'
 
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
-    logging.info("POST data received: %s", request.form.to_dict())
-    data = request.form.to_dict()
-    token = str(uuid.uuid4())
-    user_data_store[token] = data
-    logging.info("Current user_data_store: %s", user_data_store)
-    requests.post(ZAPIER_WEBHOOK_URL, json=data)
-    
+    try:
+        logging.info("POST data received: %s", request.form.to_dict())
+        data = request.form.to_dict()
+        token = str(uuid.uuid4())
+        user_data_store[token] = data
+
         # Send data to Zapier
         requests.post(ZAPIER_WEBHOOK_URL, json=data)
 
@@ -40,8 +37,6 @@ def receive_data():
     except Exception as e:
         logging.error("An error occurred: %s", str(e))
         return jsonify({"error": "An error occurred"}), 500
-
-
 
 @app.route('/get_data/<token>', methods=['GET'])
 def get_data(token):
