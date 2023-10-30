@@ -3,6 +3,7 @@ from flask_cors import CORS  # Import CORS
 import json
 import uuid
 import logging
+import requests  # Import requests for sending data to Zapier
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,12 +13,18 @@ CORS(app)  # Initialize CORS
 # Temporary in-memory storage for user data
 user_data_store = {}
 
+# Replace with the Zapier webhook URL you got
+ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/2850076/38e9im5/'
+
 @app.route('/receive_data', methods=['POST'])
 def receive_data():
     logging.info("POST data received: %s", request.form.to_dict())
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
+
+    # Send data to Zapier
+    requests.post(ZAPIER_WEBHOOK_URL, json=data)
 
     # Your Softr HTML page URL here
     softr_url = "https://www.tpak.app/planbot-html"
