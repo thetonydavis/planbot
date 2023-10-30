@@ -23,8 +23,9 @@ def receive_data():
     data = request.form.to_dict()
     token = str(uuid.uuid4())
     user_data_store[token] = data
-    logging.info("Current user_data_store: %s", user_data_store)  # Log the current state
-
+    logging.info("Current user_data_store: %s", user_data_store)
+    requests.post(ZAPIER_WEBHOOK_URL, json=data)
+    
         # Send data to Zapier
         requests.post(ZAPIER_WEBHOOK_URL, json=data)
 
